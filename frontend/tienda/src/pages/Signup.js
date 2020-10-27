@@ -1,14 +1,11 @@
-import  React,{Component} from 'react';
-import '../css/Login.css';
-import  axios from 'axios';
+import React,{Component} from 'react';
+import axios from 'axios';
 import Cookies from 'universal-cookie';
 
-
-const baseUrl = 'http://localhost:3000/api/users/login';
+const baseUrl = 'http://localhost:3000/api/users/signup';
 const cookies = new Cookies();
 
-
-export default class Login extends Component{
+export default class Signup extends Component{
 
     state={
         form:{
@@ -27,11 +24,7 @@ export default class Login extends Component{
     }
 
 
-    iniciarSesion = async()=>{
-        if(this.state.form.email==="" || this.state.form.password === ""){
-            alert('Por favor complete todos lo campos');
-            return;
-        }
+    registrarme = async()=>{
         await axios.post(baseUrl, {email: this.state.form.email, password: this.state.form.password})
         .then(response=>{
             return response.data;
@@ -41,7 +34,7 @@ export default class Login extends Component{
                 cookies.set('loggedUser', this.state.form.email, {path:'/'});
                 window.location.href = './main';
             }else{
-                alert('Usuario o contraseña incorrectos');
+                alert('Error al registrar usuario');
             }
         })
         .catch(err=>{
@@ -49,17 +42,9 @@ export default class Login extends Component{
         })
     }
 
-    signup(){
-        window.location.href = './signup';
-    }
-
-        componentDidMount(){
-            if(cookies.get('loggedUser')){
-                window.location.href = "./main";
-            }
-        }
 
 
+   
     render(){
         return(
             <div className="container-fluid">
@@ -76,15 +61,12 @@ export default class Login extends Component{
                             <input type="password" className="form-control" name='password' id="exampleInputPassword1" placeholder="Contraseña" onChange={this.handleChange}></input>
                         </div>
                         
-                        <button type="submit" className="btn btn-primary " onClick={this.iniciarSesion}>Ingresar</button>
-                        <button type="button" className="btn btn-warning ml-5" onClick={this.signup}>Registrarme</button>
+                        <button type="submit" className="btn btn-primary " onClick={this.registrarme}>Registrarme</button>
                     </form>
 
                   </div>
                 </div>
             </div>
-            
-
         );
     }
 }
