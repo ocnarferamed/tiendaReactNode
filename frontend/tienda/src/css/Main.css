@@ -1,11 +1,17 @@
-body{
-    background-image: url('../assets/img/main-fondo.jpg') ;
-    min-height: 50rem;
+.mainContainer{
+    background-image: url('../assets/img/main-fondo.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+ -moz-background-size: cover;
+ -o-background-size: cover;
+ width:100%;
+ min-height: 100em;
 }
 
 .catalogue{
     background-color: white;
 }
+

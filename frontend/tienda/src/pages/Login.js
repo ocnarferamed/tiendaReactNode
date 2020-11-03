@@ -4,9 +4,8 @@ import  axios from 'axios';
 import Cookies from 'universal-cookie';
 
 
-const baseUrl = 'http://localhost:3000/api/users/login';
+const baseUrl = 'http://localhost:3001/api/users/login';
 const cookies = new Cookies();
-
 
 export default class Login extends Component{
 
@@ -32,20 +31,18 @@ export default class Login extends Component{
             alert('Por favor complete todos lo campos');
             return;
         }
-        await axios.post(baseUrl, {email: this.state.form.email, password: this.state.form.password})
-        .then(response=>{
-            return response.data;
-        })
+        await axios.post(baseUrl,{params:{email: this.state.form.email, password: this.state.form.password}})
+       
         .then(response=> {
-            if(response.length>0){
+            if(response!==""){
                 cookies.set('loggedUser', this.state.form.email, {path:'/'});
                 window.location.href = './main';
             }else{
                 alert('Usuario o contraseña incorrectos');
             }
         })
-        .catch(err=>{
-            console.log(err);
+        .catch(e=>{
+            console.log(e);
         })
     }
 

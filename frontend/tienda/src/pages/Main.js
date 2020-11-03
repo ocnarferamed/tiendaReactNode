@@ -3,30 +3,44 @@ import Cookies from 'universal-cookie';
 import axios from 'axios';
 import '../css/Main.css';
 import NavBar from './NavBar';
+import Images from './imgSources';
+import CatalogueNav from './CatalogueNav';
+
 
 const cookies = new Cookies();
-const urlBase = 'http://localhost:3000/api/products/all';
+const urlBase = 'http://localhost:3001/api/products/all';
+var cart = [];
 
 
 export default class Main extends Component {
-    state = {
 
-        products:[]
-    }    
+   constructor(props){
+       super(props)
+       
+        this.state = {
 
+            products:[],
+            chip:0,
+            onCart: []
+            
+        }   
+
+    }
+     
+     
+
+    setImg(name){
+        for (let index = 0; index < Images.length; index++) {
+            if (Images[index].name === name) {
+                name = Images[index].img;
+                return name;
+            }
+        }
+    }
+    
     cerrarSesion(){
         cookies.remove('loggedUser', {path:"/"});
         window.location.href = "./";
-    }
-
-    componentWillMount(){
-        axios.get(urlBase)
-        .then(response=>{
-           this.setState({ products : response.data})
-           console.log(this.state.products)
-
-        })
-        .catch(err=> console.log(err))
     }
 
 
@@ -34,37 +48,98 @@ export default class Main extends Component {
         if(!cookies.get('loggedUser')){
             window.location.href = "./";
         }
+        axios.get(urlBase)
+        .then(response=>{
+           this.setState({ products : response.data})
+           
+        })
+        .catch(err=> console.log(err))
     }
 
-render(){
-    console.log(cookies.get('loggedUser'));
-    return(
-        <div className="container">
-            <NavBar />
+updateCantidad(event){
+event.preventDefault()
+    let productOnCart={
+        name:event.target.name,
+        quantity:event.target.value,
+        buy: false,
+        id: event.target.id
+    }
+    
+    if(cart.length===0){
+        cart.push(productOnCart);
+    }else{
+        for(let i=0;i<cart.length;i++){
+            if(cart[i].name === productOnCart.name){
+                cart[i].quantity= productOnCart.quantity;
+                
+                return;
+            }                
             
-                {this.state.products.map((prod)=>(
+        }
+        cart.push(productOnCart);
+    }
+    
+}
 
-                   <div className="card mt-3 ml-4 " style={{width: '18rem'}}>
-                   <img className="card-img-top"  src="" alt="producto"></img>
-                   <div className="card-body">
-                     <h5 className="card-title" >{prod.name}</h5>
-                     <p className="card-text"><strong>Precio: </strong>{prod.price}</p>
-                     <p className="card-text"><strong>Unidades Disponibles: </strong>{prod.stock}</p>
-                     
+
+addToCart(prod){    
+    
+    
+    this.setState({
+        chip: cart.length   
+        
+    });
+    for(let i = 0; i<cart.length;i++){
+        if(cart[i].name === prod.name){
+            cart[i].buy = true
            
-                    
-                   <a type="button"  href="/" className="btn btn-primary" >
-                     Ver mas
-                   </a>
-           
-                 
-                     <a  href="/" type="submit" className=" ml-2 btn btn-warning" >Agregar</a> 
-                       <input type="number" className="ml-1"   id="cantidad"  name="cantidad" min="0" max={prod.stock} ></input>
-                   </div>
-                 </div>
-                ))}
+        }
+    }
+    
+    this.setState({
+        onCart: cart
+    })
+    console.log(this.state.onCart)
+}
+
+
+
+render(){
+
+   const styleImg = {
+       width:'20rem',
+       height:'13rem'
+   }
+    return(
+        <div className="container-fluid mainContainer">
+        <div className="container">
+        
+            <NavBar chip={this.state.chip} cart={JSON.stringify(this.state.onCart)} />
+                       
+            <CatalogueNav />
+            <div className="row">
+                
+                
+                {this.state.products.map((prod)=>(
+                    <div   className="col-4">
+                        <div className="card mt-3 ml-4 " style={{width: '18rem'}}>
+                        <img className="card-img-top img-fluid" style={styleImg} src={this.setImg(prod.name)} alt="producto"></img>
+                        <div className="card-body">
+                        <h5 className="card-title" >{prod.name}</h5>
+                        <p className="card-text"><strong>Precio: </strong>{prod.price}</p>
+                        <p className="card-text"><strong>Unidades Disponibles: </strong>{prod.stock}</p>              
+                        <a type="button"  href={"/details/"+prod._id} className="btn btn-primary" >
+                        Ver mas
+                        </a>
+
+                        <button type="button"  onClick={()=>this.addToCart(prod)} className=" ml-2 btn btn-warning" >Agregar</button> 
+                            <input type="number" id={prod._id}  price={prod.price} name={prod.name} onChange={this.updateCantidad.bind(this)} className="ml-1"  style={{width:'3.5rem'}}  min="0" max={prod.stock} />
+                        </div>
+                        </div>
+                        </div> ))}
+                </div>               
             
-                    
+            </div>        
         </div>
     );
 }
