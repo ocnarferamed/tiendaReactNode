@@ -6,7 +6,15 @@ export default class CatalogueNav extends Component{
   
 
  
+
+  getValue(){
+    return this.state.search;
+  }
+
+ 
     render() {
+
+      
         return(
             
             <nav className="navbar navbar-expand-lg navbar-light bg-light mt-5">
@@ -16,7 +24,7 @@ export default class CatalogueNav extends Component{
             </button>
           
             
-                <input className="form-control  col-3 offset-6" type="search" placeholder="Buscar producto" aria-label="Search"></input>
+                <input className="form-control  col-3 offset-6" onChange={this.props.handleSearch} type="search"  placeholder="Buscar producto" aria-label="Search"></input>
                 
             
           </nav>

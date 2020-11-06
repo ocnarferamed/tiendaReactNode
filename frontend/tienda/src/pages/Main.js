@@ -21,10 +21,12 @@ export default class Main extends Component {
 
             products:[],
             chip:0,
-            onCart: []
+            onCart: [],
+            search:""
             
         }   
 
+        this.handleSearch = this.handleSearch.bind(this)
     }
      
      
@@ -104,23 +106,41 @@ addToCart(prod){
 
 
 
+
+
+handleSearch = (e)=>{
+    this.setState({ search: e.target.value})
+  }
+
+
 render(){
+
+
+    const resultProducts =[];
+    for( let product of this.state.products){
+      if(product.name.indexOf(this.state.search) !== -1){
+        resultProducts.push(product);
+      }
+    }
+   
+
 
    const styleImg = {
        width:'20rem',
        height:'13rem'
    }
+   const a = true
     return(
         <div className="container-fluid mainContainer">
         <div className="container">
         
             <NavBar chip={this.state.chip} cart={JSON.stringify(this.state.onCart)} />
                        
-            <CatalogueNav />
+            <CatalogueNav  handleSearch={this.handleSearch}/>
             <div className="row">
                 
                 
-                {this.state.products.map((prod)=>(
+                {resultProducts.map((prod)=>(
                     <div   className="col-4">
                         <div className="card mt-3 ml-4 " style={{width: '18rem'}}>
                         <img className="card-img-top img-fluid" style={styleImg} src={this.setImg(prod.name)} alt="producto"></img>

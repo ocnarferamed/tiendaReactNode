@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
 import axios from 'axios';
-import Cookies from 'universal-cookie';
 
-const baseUrl = 'http://localhost:3000/api/users/signup';
-const cookies = new Cookies();
+
+const baseUrl = 'http://localhost:3001/api/users/signup';
+
 
 export default class Signup extends Component{
 
@@ -25,14 +25,11 @@ export default class Signup extends Component{
 
 
     registrarme = async()=>{
-        await axios.post(baseUrl, {email: this.state.form.email, password: this.state.form.password})
-        .then(response=>{
-            return response.data;
-        })
+        await axios.post(baseUrl, {email: this.state.form.email, password: this.state.form.password})        
         .then(response=> {
-            if(response.length>0){
-                cookies.set('loggedUser', this.state.form.email, {path:'/'});
-                window.location.href = './main';
+            if(response!==""){
+                
+                window.location.href = './';
             }else{
                 alert('Error al registrar usuario');
             }
@@ -56,7 +53,7 @@ export default class Signup extends Component{
                             <input type="email" className="form-control" id="exampleInputEmail1"  name='email' placeholder="Ingresar mail" onChange={this.handleChange}></input>
                             
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <label for="exampleInputPassword1">Contraseña</label>
                             <input type="password" className="form-control" name='password' id="exampleInputPassword1" placeholder="Contraseña" onChange={this.handleChange}></input>
                         </div>

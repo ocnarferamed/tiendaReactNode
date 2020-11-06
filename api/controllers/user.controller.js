@@ -17,6 +17,7 @@ userController.createUser = async (req,res)=>{
 userController.authenticateUser = async (req,res)=>{
     let body = req.body;
     console.log(req.body.email)
+    console.log(body)
     User.findOne({"name":`${body.email}`},function(err, result){
         if(err) throw err;    
         if(!result) res.json("Incorrect user or password"); 

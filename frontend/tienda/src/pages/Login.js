@@ -21,8 +21,10 @@ export default class Login extends Component{
             form: {
                 ...this.state.form,
                 [e.target.name]: e.target.value
+                
             }
         });
+        
     }
 
 
@@ -31,14 +33,15 @@ export default class Login extends Component{
             alert('Por favor complete todos lo campos');
             return;
         }
-        await axios.post(baseUrl,{params:{email: this.state.form.email, password: this.state.form.password}})
+        await axios.post(baseUrl,{email: this.state.form.email, password: this.state.form.password})
        
         .then(response=> {
-            if(response!==""){
+            console.log(response.data)
+            if(response.data==='Validated'){
                 cookies.set('loggedUser', this.state.form.email, {path:'/'});
                 window.location.href = './main';
             }else{
-                alert('Usuario o contraseña incorrectos');
+                alert(response.data);
             }
         })
         .catch(e=>{
@@ -64,12 +67,12 @@ export default class Login extends Component{
                 <div className="col-4 offset-4">
                         <form>
                         <div className="form-group">
-                            <label for="exampleInputEmail1">Direccion de correo</label>
+                            <label htmlfor="exampleInputEmail1">Direccion de correo</label>
                             <input type="email" className="form-control" id="exampleInputEmail1"  name='email' placeholder="Ingresar mail" onChange={this.handleChange}></input>
                             
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Contraseña</label>
+                            <label htmlfor="exampleInputPassword1">Contraseña</label>
                             <input type="password" className="form-control" name='password' id="exampleInputPassword1" placeholder="Contraseña" onChange={this.handleChange}></input>
                         </div>
                         
